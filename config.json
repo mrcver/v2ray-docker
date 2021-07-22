@@ -1,22 +1,64 @@
 {
-  "inbounds": [
-    {
-      "port": 8888,
-      "protocol": "vmess",
-      "settings": {
-        "clients": [
-          {
-            "id": "9db093e6-5f78-11ea-bc55-0242ac130003",
-            "alterId": 64
-          }
+  "policy":{
+    "levels": {
+      "1": {
+        "handshake": 4,
+        "connIdle": 300,
+        "uplinkOnly": 2,
+        "downlinkOnly": 5,
+        "statsUserUplink": false,
+        "statsUserDownlink": false,
+        "bufferSize": 10240
+      }
+    },
+    "system": {
+      "statsInboundUplink": false,
+      "statsInboundDownlink": false
+    }
+  },
+  "inbounds": [{
+    "port": 8888,
+    "protocol": "vmess",
+    "settings": {
+      "clients": [
+        {
+          "id": "1ccbc697-a898-11e9-a280-0235d2b38928",
+          "level": 1,
+          "alterId": 64
+        }
+      ]
+    },
+   "streamSettings":{
+      "network":"ws",
+      "security": "auto",
+      "wsSettings":{
+         "connectionReuse": true,
+         "path": "/stream/"
+       }
+    }
+  }],
+  "outbounds": [{
+    "protocol": "freedom",
+    "settings": {}
+  },{
+    "protocol": "blackhole",
+    "settings": {},
+    "tag": "blocked"
+  }],
+  "routing": {
+    "rules": [
+      {
+        "type": "field",
+        "ip": ["geoip:private"],
+        "outboundTag": "blocked"
+      },
+      {
+        "type": "field",
+        "outboundTag": "block",
+        "protocol": [
+          "bittorrent"
         ]
       }
-    }
-  ],
-  "outbounds": [
-    {
-      "protocol": "freedom",
-      "settings": {}
-    }
-  ]
+    ]
+  }
 }
